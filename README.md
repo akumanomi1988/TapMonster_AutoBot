@@ -1,8 +1,14 @@
-Aquí tienes el `README.md` actualizado con la URL del repositorio:
-
----
 
 # TapMonster AutoBot
+
+### 🚀 **Support the Project!**
+
+If you find this project helpful, consider supporting me by using my referral link for the TapMonsters app. Your support helps me continue working on projects like this!
+
+👉 **[Use my referral link to get started!](https://t.me/tapmonsters_bot/start?startapp=ref1956860053&startApp=ref1956860053)** 👈
+
+Thank you for your support! 🙌
+**************************************
 
 A Python tool for managing and automating operations through the TapMonster API. This application includes features to perform taps, purchase upgrades, and manage configurations automatically.
 
