@@ -6,7 +6,7 @@ Aquí tienes el `README.md` actualizado con la URL del repositorio:
 
 A Python tool for managing and automating operations through the TapMonster API. This application includes features to perform taps, purchase upgrades, and manage configurations automatically.
 
-![Project Banner](https://via.placeholder.com/1200x300?text=TapMonster+AutoBot)
+![Project Banner](resources/banner.jpg)
 
 ## Table of Contents
 
