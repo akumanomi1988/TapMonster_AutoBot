@@ -1,0 +1,6 @@
+{
+    "bearer_token": "",
+    "min_wait_time": 10,
+    "max_wait_time": 30,
+    "buy_until_no_more": true
+}
