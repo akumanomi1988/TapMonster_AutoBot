@@ -80,8 +80,7 @@ def purchase_upgrades(api, buy_until_no_more, config):
                 break
             else:
                 print_with_color("No affordable upgrades. Waiting before continuing...", Fore.YELLOW)
-                time.sleep(get_wait_time(config['min_wait_time'], config['max_wait_time']))
-                continue
+                break
 
         # Choose the most cost-effective upgrade among those that can be purchased
         best_upgrade = max(
@@ -99,7 +98,7 @@ def purchase_upgrades(api, buy_until_no_more, config):
             user_data = response
         except requests.RequestException as e:
             print_with_color(f"Error purchasing upgrade: {e}", Fore.RED)
-        
+            break
         # Continue from the start of the loop
         continue
 
