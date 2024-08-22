@@ -2,7 +2,6 @@ import json
 import requests
 import time
 import random
-from tqdm import tqdm
 from colorama import Fore, Style, init
 from TapMonster import TapMonster
 import math
@@ -48,12 +47,12 @@ def execute_taps(api, user_data):
         current_energy = user_data.get('me', {}).get('energy', {}).get('amount', 0)
 
         try:
-            api.tap(taps_to_use, time_now, current_energy)
+            response = api.tap(taps_to_use, time_now, current_energy)
+            user_data = response  # Update user_data with the latest response
         except requests.RequestException as e:
             print_with_color(f"Error executing taps: {e}", Fore.RED)
             continue
         
-        user_data = get_user_data(api)
         taps_remaining = user_data.get('me', {}).get('energy', {}).get('amount', 0)
 
 def purchase_upgrades(api, buy_until_no_more, config):
@@ -93,8 +92,11 @@ def purchase_upgrades(api, buy_until_no_more, config):
 
         try:
             response = api.upgrade_element(best_upgrade['slug'])
+            # Only print the response if there is an error
             if 'message' in response and response['message']:
                 print_with_color(f"Purchase response: {response}", Fore.RED)
+            # Update user_data with the latest response
+            user_data = response
         except requests.RequestException as e:
             print_with_color(f"Error purchasing upgrade: {e}", Fore.RED)
         
