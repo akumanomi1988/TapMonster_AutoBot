@@ -5,8 +5,9 @@
 
 If you find this project helpful, consider supporting me by using my referral link for the TapMonsters app. Your support helps me continue working on projects like this!
 
-👉 **[Use my referral link to get started!](https://t.me/tapmonsters_bot/start?startapp=ref1956860053&startApp=ref1956860053)** 👈
-
+👉 **[Use my referral link to get started!](https://t.me/tapmonsters_bot/start?startapp=ref1956860053&startApp=ref1956860053)
+ or else
+ [Join my clan](https://t.me/tapmonsters_bot/start?startapp=ref1956860053-clanAKCJ7&startApp=ref1956860053-clanAKCJ7)**👈
 Thank you for your support! 🙌
 **************************************
 
