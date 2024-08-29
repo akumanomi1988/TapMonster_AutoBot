@@ -105,11 +105,12 @@ def collect_daily_streak(api: TapMonster):
     try:
         print_with_color("Getting streak status",color=Fore.YELLOW)
         response = api.login_streak()
-        collectable_entries = list(filter(lambda entry: entry['state'] == "COLLECTABLE", response['entries']))
-        if collectable_entries:
-            api.login_streak_collect(collectable_entries[0]['number'])
-            print_with_color(f"Collected element: {collectable_entries[0]['number']}",color=Fore.GREEN)
-            return
+        if len(response) > 1:
+            collectable_entries = list(filter(lambda entry: entry['state'] == "COLLECTABLE", response['entries']))
+            if collectable_entries:
+                api.login_streak_collect(collectable_entries[0]['number'])
+                print_with_color(f"Collected element: {collectable_entries[0]['number']}",color=Fore.GREEN)
+                return
         print_with_color(f"No collectable elements.",color=Fore.YELLOW)
     except requests.RequestException as e:
         print_with_color(f"Error obtain streak status: {e}", Fore.RED)
@@ -118,14 +119,20 @@ def collect_daily_streak(api: TapMonster):
 
 def perform_actions(api, buy_until_no_more, config):
     """Perform the main actions: tapping and upgrading."""
+    errCount = 0
     while True:
-        user_data = get_user_data(api)
-        execute_taps(api, user_data)
-        purchase_upgrades(api, buy_until_no_more, config)
-        collect_daily_streak(api)
-        wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
-        print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
-        time.sleep(wait_time)
+        try:
+            user_data = get_user_data(api)
+            execute_taps(api, user_data)
+            purchase_upgrades(api, buy_until_no_more, config)
+            collect_daily_streak(api)
+            wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
+            print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
+            time.sleep(wait_time)
+        except:
+            if errCount < 5:
+                errCount +=1
+                continue
 
 if __name__ == "__main__":
     try:
