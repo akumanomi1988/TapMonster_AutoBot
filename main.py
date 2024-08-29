@@ -130,8 +130,8 @@ def perform_actions(api, buy_until_no_more, config):
             print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
             time.sleep(wait_time)
         except:
+            errCount +=1
             if errCount < 5:
-                errCount +=1
                 continue
 
 if __name__ == "__main__":
