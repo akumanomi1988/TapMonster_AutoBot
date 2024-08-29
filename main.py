@@ -4,6 +4,7 @@ import time
 import random
 from colorama import Fore, Style, init
 from TapMonster import TapMonster
+from kuroro import Kuroro
 import math
 
 # Initialize Colorama
@@ -117,17 +118,18 @@ def collect_daily_streak(api: TapMonster):
         
 
 
-def perform_actions(api, buy_until_no_more, config):
+def perform_actions(tapmonster:TapMonster,kuroro:Kuroro, buy_until_no_more, config):
     """Perform the main actions: tapping and upgrading."""
     errCount = 0
     while True:
         try:
-            user_data = get_user_data(api)
-            execute_taps(api, user_data)
-            purchase_upgrades(api, buy_until_no_more, config)
-            collect_daily_streak(api)
+            user_data = get_user_data(tapmonster)
+            execute_taps(tapmonster, user_data)
+            purchase_upgrades(tapmonster, buy_until_no_more, config)
+            collect_daily_streak(tapmonster)
             wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
             print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
+            kuroro.execute()
             time.sleep(wait_time)
         except:
             errCount +=1
@@ -137,8 +139,9 @@ def perform_actions(api, buy_until_no_more, config):
 if __name__ == "__main__":
     try:
         config = read_config('config.json')
-        api = TapMonster(config['bearer_token'])
+        tapmonster_api = TapMonster(config['tapmonster_bearer_token'])
+        kuroro_api = Kuroro(config['kuroro_bearer_token'])
         buy_until_no_more = config.get('buy_until_no_more', True)  # Default to True if not specified
-        perform_actions(api, buy_until_no_more, config)
+        perform_actions(tapmonster_api,kuroro_api, buy_until_no_more, config)
     except Exception as e:
         print_with_color(f"An unexpected error occurred: {e}", Fore.RED)
