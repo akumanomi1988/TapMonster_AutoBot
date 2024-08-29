@@ -2,19 +2,23 @@ import requests
 import json
 
 class TapMonster:
+
     def __init__(self, bearer_token):
         self.headers = {
+            'accept': '*/*',
             'accept-language': 'es,es-ES;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
             'authorization': f'Bearer {bearer_token}',
             'content-type': 'application/json',
             'priority': 'u=1, i',
-            'sec-ch-ua': '"Not)A;Brand";v="99", "Microsoft Edge";v="127", "Chromium";v="127"',
+            'sec-ch-ua': '"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128"',
             'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': 'Windows',
+            'sec-ch-ua-platform': '"Windows"',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-site'
+            'sec-fetch-site': 'same-site',
+            'x-tm-api-version': '1.1.0'
         }
+
 
     def get_user_data(self):
         url = "https://api.tapmonsters.wombat.app/me"
