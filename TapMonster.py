@@ -36,3 +36,17 @@ class TapMonster:
         })
         response = requests.post(url, headers=self.headers, data=payload)
         return response.json()
+    
+    def login_streak(self):
+        url = "https://api.tapmonsters.wombat.app/login-streak"
+        response = requests.get(url, headers=self.headers)
+        return response.json()
+    
+    def login_streak_collect(self, number):
+        url = "https://api.tapmonsters.wombat.app/login-streak"
+        payload = json.dumps({
+            "number": number
+        })
+        response = requests.post(url, headers=self.headers, data=payload)
+        return response.json()
+

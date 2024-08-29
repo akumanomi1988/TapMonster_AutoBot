@@ -26,7 +26,7 @@ def print_with_color(message, color):
     """Print message with specified color."""
     print(f"{color}{message}{Style.RESET_ALL}")
 
-def get_user_data(api):
+def get_user_data(api:TapMonster):
     """Retrieve user data from the API."""
     try:
         print_with_color("Retrieving user data...", Fore.YELLOW)
@@ -35,7 +35,7 @@ def get_user_data(api):
         print_with_color(f"Error retrieving user data: {e}", Fore.RED)
         raise
 
-def execute_taps(api, user_data):
+def execute_taps(api:TapMonster, user_data):
     """Execute taps until fewer than 100 remain."""
     taps_remaining = user_data.get('me', {}).get('energy', {}).get('amount', 0)
     
@@ -55,7 +55,7 @@ def execute_taps(api, user_data):
         
         taps_remaining = user_data.get('me', {}).get('energy', {}).get('amount', 0)
 
-def purchase_upgrades(api, buy_until_no_more, config):
+def purchase_upgrades(api:TapMonster, buy_until_no_more, config):
     """Purchase the most cost-effective upgrades."""
     while True:
         time.sleep(5)
@@ -101,6 +101,20 @@ def purchase_upgrades(api, buy_until_no_more, config):
             break
         # Continue from the start of the loop
         continue
+def collect_daily_streak(api: TapMonster):
+    try:
+        print_with_color("Getting streak status",color=Fore.YELLOW)
+        response = api.login_streak()
+        collectable_entries = list(filter(lambda entry: entry['state'] == "COLLECTABLE", response['entries']))
+        if collectable_entries:
+            api.login_streak_collect(collectable_entries[0]['number'])
+            print_with_color(f"Collected element: {collectable_entries[0]['number']}",color=Fore.GREEN)
+            return
+        print_with_color(f"No collectable elements.",color=Fore.YELLOW)
+    except requests.RequestException as e:
+        print_with_color(f"Error obtain streak status: {e}", Fore.RED)
+        
+
 
 def perform_actions(api, buy_until_no_more, config):
     """Perform the main actions: tapping and upgrading."""
@@ -108,7 +122,7 @@ def perform_actions(api, buy_until_no_more, config):
         user_data = get_user_data(api)
         execute_taps(api, user_data)
         purchase_upgrades(api, buy_until_no_more, config)
-
+        collect_daily_streak(api)
         wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
         print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
         time.sleep(wait_time)
