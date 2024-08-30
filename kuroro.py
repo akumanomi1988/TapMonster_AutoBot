@@ -91,9 +91,10 @@ class Kuroro:
                 
             except ValueError as e:
                 print(Fore.RED + str(e))
+                return
             except requests.RequestException as e:
                 print(Fore.RED + f"An error occurred: {e}")
-
+                return
             # Wait between 600 and 800 seconds
             wait_time = random.randint(10, 20)
             print(Fore.YELLOW + f"Waiting for {wait_time} seconds...")

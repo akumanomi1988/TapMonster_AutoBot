@@ -128,8 +128,8 @@ def perform_actions(tapmonster:TapMonster,kuroro:Kuroro, buy_until_no_more, conf
             purchase_upgrades(tapmonster, buy_until_no_more, config)
             collect_daily_streak(tapmonster)
             wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
-            print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
             kuroro.execute()
+            print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
             time.sleep(wait_time)
         except:
             errCount +=1
