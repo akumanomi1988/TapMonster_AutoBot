@@ -66,15 +66,30 @@ class Kuroro:
         else:
             response.raise_for_status()
 
-    def execute(self):
+    def find_most_profitable_upgrade_buy_until_no_more(self, upgrades, coins):
+        purchasable_upgrades = [u for u in upgrades if u.get('canBePurchased') and u['cost'] <= coins]
+
+        if not purchasable_upgrades:
+            raise ValueError("No purchasable upgrades found.")
+
+        most_profitable = min(
+            purchasable_upgrades,
+            key=lambda u: u['cost'] / u['earnIncrement']
+        )
+        
+        return most_profitable
+
+    def execute(self,buy_until_no_more):
         while True:
             try:
                 # Fetch upgrades and coins
                 upgrades = self.fetch_purchasable_upgrades()
                 coins = self.fetch_coins()
-
-                # Find the most profitable upgrade
-                most_profitable = self.find_most_profitable_upgrade(upgrades)
+                if buy_until_no_more:
+                    most_profitable = self.find_most_profitable_upgrade_buy_until_no_more(upgrades,coins)
+                else:
+                    # Find the most profitable upgrade
+                    most_profitable = self.find_most_profitable_upgrade(upgrades)
                 
                 # Check if you have enough coins
                 if most_profitable['cost'] > coins:
@@ -96,6 +111,6 @@ class Kuroro:
                 print(Fore.RED + f"An error occurred: {e}")
                 return
             # Wait between 600 and 800 seconds
-            wait_time = random.randint(10, 20)
+            wait_time = random.randint(5, 10)
             print(Fore.YELLOW + f"Waiting for {wait_time} seconds...")
             time.sleep(wait_time)
