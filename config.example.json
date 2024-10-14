@@ -1,6 +1,9 @@
 {
-    "bearer_token": "",
-    "min_wait_time": 10,
-    "max_wait_time": 30,
+    "tapmonster":true,
+    "tapmonster_query_id": "",
+    "kuroro":false,
+    "kuroro_query_id": "",
+    "min_wait_time": 600,
+    "max_wait_time": 800,
     "buy_until_no_more": true
 }

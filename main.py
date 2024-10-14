@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import datetime
 import requests
 import time
 import random
@@ -7,7 +7,6 @@ from colorama import Fore, Style, init
 from TapMonster import TapMonster
 from kuroro import Kuroro
 import math
-from datetime import datetime
 
 # Initialize Colorama
 init(autoreset=True)
@@ -45,13 +44,7 @@ def can_refill_energy(user_data):
     max_refills = energy_data.get('maxRefills', 0)
     used_refills = energy_data.get('usedRefills', 0)
     cooldown_reset = energy_data.get('coolDownReset', None)
-
-    if max_refills > used_refills and cooldown_reset:
-        cooldown_time = datetime.fromisoformat(cooldown_reset.replace("Z", "+00:00"))
-        current_time = current_time = datetime.now(timezone.utc)
-        return current_time > cooldown_time
-
-    return False
+    return max_refills > used_refills and cooldown_reset is None
 
 def execute_taps_and_refill(api: TapMonster, user_data):
     """Execute taps and refill energy until no more refills can be done."""
@@ -85,8 +78,7 @@ def execute_taps_and_refill(api: TapMonster, user_data):
                 print_with_color(f"Error refilling energy: {e}", Fore.RED)
                 break
 
-
-def purchase_upgrades(api: TapMonster, buy_until_no_more, config):
+def purchase_upgrades(api: TapMonster, buy_until_no_more):
     """Purchase the most cost-effective upgrades."""
     while True:
         time.sleep(5)
@@ -149,13 +141,13 @@ def collect_daily_streak(api: TapMonster):
 
 def perform_actions(config, tapmonster: TapMonster = None, kuroro: Kuroro = None, buy_until_no_more = False):
     """Perform the main actions: tapping and upgrading."""
-    errCount = 0
+    err_count = 0
     while True:
         try:
             if tapmonster:
                 user_data = get_user_data(tapmonster)
                 execute_taps_and_refill(tapmonster, user_data)
-                purchase_upgrades(tapmonster, buy_until_no_more, config)
+                purchase_upgrades(tapmonster, buy_until_no_more)
                 collect_daily_streak(tapmonster)
 
             if kuroro:
@@ -164,23 +156,28 @@ def perform_actions(config, tapmonster: TapMonster = None, kuroro: Kuroro = None
             wait_time = get_wait_time(config['min_wait_time'], config['max_wait_time'])
             print_with_color(f"Waiting {wait_time:.2f} seconds before next iteration...", Fore.YELLOW)
             time.sleep(wait_time)
-        except:
-            errCount += 1
-            if errCount < 5:
-                continue
+            err_count = 0  # Reset error count on successful iteration
+        except Exception as e:
+            err_count += 1
+            print_with_color(f"Error occurred: {e}. Attempt {err_count}/5", Fore.RED)
+            if err_count >= 5:
+                print_with_color("Too many errors. Exiting...", Fore.RED)
+                break
+            time.sleep(30)  # Wait 30 seconds before retrying
 
 if __name__ == "__main__":
     try:
         config = read_config('config.json')
-        use_tapmonster = config['tapmonster']
         tapmonster_api = None
         kuroro_api = None
-        if use_tapmonster:
+        
+        if config['tapmonster']:
             tapmonster_api = TapMonster(config['tapmonster_query_id'])
-        use_kuroro = config['kuroro']
-        if use_kuroro:
-            kuroro_api = Kuroro(config['kuroro_bearer_token'])
-        buy_until_no_more = config.get('buy_until_no_more', True)  # Default to True if not specified
+        
+        if config['kuroro']:
+            kuroro_api = Kuroro(config['kuroro_query_id'])
+        
+        buy_until_no_more = config['buy_until_no_more']
         perform_actions(config, tapmonster_api, kuroro_api, buy_until_no_more)
     except Exception as e:
         print_with_color(f"An unexpected error occurred: {e}", Fore.RED)

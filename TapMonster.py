@@ -87,5 +87,5 @@ class TapMonster:
     
     def refill_energy(self):
         """Attempt to refill energy."""
-        response = requests.post(f"{self.base_url}/energy/refill", headers=self.headers)
-        return response.json()
+        url = "https://api.tapmonsters.wombat.app/energy/refill"
+        return self.request_with_token(url, method="POST")
